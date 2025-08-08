@@ -39,7 +39,11 @@ class Fecha{
         Fecha& operator--();        //prefijo
 
         //conversión a const char*
-        operator const char*() const;
+        const char* Cadena() const;
+        
+        //operadores de extraccion e insercion de flujo
+        friend std::ostream& operator <<(std::ostream& os, const Fecha &f);
+        friend std::istream& operator >>(std::istream& is, Fecha &f);
 
         //clase fecha::invalida
         class Invalida{
