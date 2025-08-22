@@ -123,8 +123,30 @@ const char& Cadena::operator[](size_t i) const{
 }
 
 //conversion a cadena de bajo nivel
-Cadena::operator const char*() const{
+/*Cadena::operator const char*() const{
     return s_;
+}*/
+
+//operador de insercion de flujo
+std::ostream& operator <<(std::ostream& os, const Cadena &c)
+{
+    if(os)
+    {
+        os << c.s_;
+    }
+    return os;
+}
+
+//operador de extracción de flujo
+std::istream& operator >>(std::istream& is, Cadena &c)
+{
+    char cad[33];
+    if (is >> cad)
+    {
+        c = Cadena(cad);
+    }
+    return is;
+
 }
 
 /*-----------------METODOS------------------*/
