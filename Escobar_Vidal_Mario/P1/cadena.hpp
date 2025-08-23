@@ -2,6 +2,7 @@
 #define CADENA_H_
 
 #include <cstring>
+#include <iostream>
 
 class Cadena{
     public:
@@ -37,7 +38,12 @@ class Cadena{
         const char& operator[] (size_t i) const;
 
         //conversion a cadena de bajo nivel
-        explicit operator const char*() const;
+        //explicit operator const char*() const; // deja de ser necesario por el operador de inserción
+
+        //operadores de insercion y extracción
+        friend std::ostream& operator <<(std::ostream& os, const Cadena &c);
+        friend std::istream& operator >>(std::istream& is, Cadena &c);
+
 
         //metodos
         char& at(size_t i);
