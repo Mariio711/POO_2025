@@ -22,6 +22,13 @@ Cadena::Cadena(const char* cadena) : tam_(std::strlen(cadena)), s_(tam_ > 0 ? ne
 // Constructor de copia
 Cadena::Cadena(const Cadena& otra) : Cadena(otra.s_) {}
 
+//constructor de movimiento
+Cadena::Cadena(Cadena &&otra) noexcept : s_{otra.s_}, tam_{otra.tam_}
+{
+    otra.s_ = vacia;
+    otra.tam_ = 0;
+}
+
 // Operador de asignación
 Cadena& Cadena::operator=(const Cadena& otra) {
     if (this != &otra) {
@@ -45,6 +52,21 @@ Cadena& Cadena::operator=(const char* cadena) {
     }
     tam_ = nueva_tam;
     s_ = nueva_s;
+    return *this;
+}
+
+//operador de asignacion con movimiento
+Cadena& Cadena::operator=(Cadena &&otra) noexcept
+{
+    if(this != &otra)
+    {
+        delete[] s_;
+        tam_ = otra.tam_;
+        s_ = otra.s_;
+
+        otra.tam_ = 0;
+        otra.s_ = vacia;
+    }
     return *this;
 }
 
