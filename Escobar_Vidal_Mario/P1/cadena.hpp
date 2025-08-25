@@ -15,7 +15,7 @@ public:
 
     //constructor de movimiento
     Cadena(Cadena &&otra) noexcept;
-    
+
     // operador de aignación
     Cadena &operator=(const Cadena &otra);
     Cadena &operator=(const char *cadena);
@@ -46,7 +46,7 @@ public:
     const char &operator[](size_t i) const;
 
     // conversion a cadena de bajo nivel
-    // explicit operator const char*() const; // deja de ser necesario por el operador de inserción
+    explicit operator const char*() const; // deja de ser necesario por el operador de inserción
 
     // operadores de insercion y extracción
     friend std::ostream &operator<<(std::ostream &os, const Cadena &c);

@@ -47,7 +47,7 @@ bool Fecha::valida() const
 }
 
 // Constructor por defecto
-Fecha::Fecha(int d, int m, int a) : dia_{d}, mes_{m}, anno_{a}
+Fecha::Fecha(int d, int m, int a) : dia_{d}, mes_{m}, anno_{a}, actual{false}
 {
     f_actual(dia_, mes_, anno_);
 
@@ -58,11 +58,16 @@ Fecha::Fecha(int d, int m, int a) : dia_{d}, mes_{m}, anno_{a}
 }
 
 // Constructor que toma un char* (conversión)
-Fecha::Fecha(const char *f)
+Fecha::Fecha(const char *f) : actual{false}
 {
+    // Verificar entrada nula o vacía
+    if (!f || std::strlen(f) == 0) {
+        throw Invalida("Cadena de fecha vacía");
+    }
+    
     int d, m, a;
-    if (sscanf(f, "%d/%d/%d", &d, &m, &a) != 3)
-    {
+    // Verificar que se lean exactamente 3 números
+    if (sscanf(f, "%d/%d/%d", &d, &m, &a) != 3) {
         throw Invalida("Formato de fecha inválido");
     }
 
@@ -71,8 +76,7 @@ Fecha::Fecha(const char *f)
     mes_ = m;
     anno_ = a;
 
-    if (!valida())
-    {
+    if (!valida()) {
         throw Invalida("Fecha inválida");
     }
 }
@@ -176,7 +180,7 @@ Fecha &Fecha::operator--()
 }
 
 // operador de conversion a const char* implicito
-const char* Fecha::Cadena() const
+const char* Fecha::cadena() const
 {
     if (actual)
     {
@@ -202,25 +206,17 @@ const char* Fecha::Cadena() const
 
 std::istream& operator>>(std::istream& is, Fecha& f)
 {
-    int dia, mes, anno;
-    char separador1, separador2;
-    
-    // Leer en formato DD/MM/AAAA
-    if (is >> dia >> separador1 >> mes >> separador2 >> anno) {
-        // Verificar que los separadores sean '/'
-        if (separador1 == '/' && separador2 == '/') {
-            try {
-                // Crear nueva fecha y reemplazar la existente solo si es válida
-                Fecha nueva_fecha(dia, mes, anno);
-                f = nueva_fecha;
-            } catch (const Fecha::Invalida&) {
-                // Marcar el stream en fallo y no modificar f
-                is.setstate(std::ios::failbit);
-                // Re-lanzar la excepción para que el código que llama pueda manejarla
-                throw;
-            }
-        } else {
-            is.setstate(std::ios::failbit);
+    char buffer[11];
+    // Limitar SIEMPRE la cantidad a leer para evitar desbordamientos
+    is.width(static_cast<std::streamsize>(sizeof(buffer)));
+
+    if (is >> buffer) {
+        try {
+            Fecha tmp(buffer);
+            f = tmp;              // no modifica si la lectura/parseo falla
+        } catch (const Fecha::Invalida&) {
+            is.setstate(std::ios::failbit); // marcar fallo
+            throw;
         }
     }
     return is;
@@ -229,7 +225,7 @@ std::istream& operator>>(std::istream& is, Fecha& f)
 std::ostream& operator<<(std::ostream& os, const Fecha& f)
 {
     if (os) {  // Verificar que el stream esté en buen estado
-        os << f.Cadena();
+        os << f.cadena();
     }
     return os;
 }

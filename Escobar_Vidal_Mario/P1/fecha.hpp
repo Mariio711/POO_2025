@@ -3,6 +3,7 @@
 
 #include <ctime>
 #include <iostream>
+#include <cstring>
 
 class Fecha{
     public:
@@ -39,7 +40,7 @@ class Fecha{
         Fecha& operator--();        //prefijo
 
         //conversión a const char*
-        const char* Cadena() const;
+        const char* cadena() const;
         
         //operadores de extraccion e insercion de flujo
         friend std::ostream& operator <<(std::ostream& os, const Fecha &f);
