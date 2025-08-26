@@ -1,6 +1,8 @@
 #ifndef USUARIO_HPP
 #define USUARIO_HPP
 
+#include <unistd.h>
+#include <random>
 #include "cadena.hpp"
 
 class Clave
@@ -32,6 +34,8 @@ public:
 
     // metodo verificar
     bool verifica(const char *cad) const; // recibe la contraseña en claro y devuelve verdadero si corresponde con la contraseña
+
+    friend const Cadena &cifrar(const char *cad);
 
 private:
     Cadena clave_;                          // aloja la contraseña cifrada
