@@ -3,7 +3,11 @@
 
 #include <unistd.h>
 #include <random>
+#include <iostream>
+#include <map>
+#include <unordered_map>
 #include "cadena.hpp"
+#include "tarjeta.hpp"
 
 class Clave
 {
@@ -42,4 +46,57 @@ private:
     static const char caracteres_validos[]; // Conjunto de caracteres entre los que escoger la «sal» para encriptar las claves
 };
 
+class Usuario
+{
+public:
+    typedef std::map<Numero, Tarjeta *> Tarjetas;
+    typedef std::unordered_map<Articulo *, unsigned int> Articulos;
+
+    // clase de error
+    class Id_duplicado
+    {
+    public:
+        Id_duplicado(Cadena idd) : idd_(idd) {}
+        Cadena idd() const { return idd_; }
+
+    private:
+        Cadena idd_;
+    };
+
+    // constructor
+    Usuario(Cadena id, Cadena nombre, Cadena apell, Cadena direc, Clave clave);
+
+    // prohibir la copia
+    Usuario(const Usuario &user) = delete;
+    Usuario &operator=(const Usuario &user) = delete;
+
+    //metodos observadores
+    const Cadena id() const {return id_; };
+    const Cadena nombre() const {return nombre_; };
+    const Cadena apellidos() const {return apellidos_; };
+    const Cadena direccion() const {return dir_; };
+    const Tarjetas& tarjetas() const {return tarjetas_; };
+    const Articulos& compra() const {return articulos_; };
+
+    //asociacion con clase Tarjeta
+    void es_titular_de (Tarjeta &t);
+    void no_es_titular_de (Tarjeta &t);
+
+    //asociacion con clase Articulo
+    void compra(Articulo &art, unsigned int cantidad = 1);
+    void vaciar_carro();
+    size_t n_articulos() const;
+
+    //sobrecarga de operador de insercion
+    friend std::ostream &operator <<(std::ostream &os, const Usuario &usr);
+
+
+private:
+    const Cadena id_, nombre_, apellidos_, dir_;
+    Clave clave_;
+    Tarjetas tarjetas_;
+    Articulos articulos_;
+};
+
+std::ostream& mostrar_carro(std::ostream& os, const Usuario& user);
 #endif
