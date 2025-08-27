@@ -90,7 +90,7 @@ public:
     //sobrecarga de operador de insercion
     friend std::ostream &operator <<(std::ostream &os, const Usuario &usr);
 
-
+    ~Usuario();
 private:
     const Cadena id_, nombre_, apellidos_, dir_;
     Clave clave_;
