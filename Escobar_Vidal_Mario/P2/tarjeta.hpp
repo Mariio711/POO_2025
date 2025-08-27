@@ -1,6 +1,8 @@
 #ifndef TARJETA_HPP
 #define TARJETA_HPP
 
+#include <cctype>
+#include <cstddef>
 #include "cadena.hpp"
 
 class Numero
@@ -26,7 +28,7 @@ public:
     };
 
     //constructor
-    Numero(Cadena num);
+    Numero(const Cadena num);
 
     //operador a cadena de bajo nivel
     explicit operator const char*() const;
@@ -36,7 +38,7 @@ public:
 
 
 private:
-    Cadena numero;
+    Cadena numero_;
 
 };
 

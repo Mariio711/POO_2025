@@ -12,8 +12,13 @@ const Cadena &cifrar(const char *cad)
     const char sal[3] = {Clave::caracteres_validos[uniforme(gna)],
                          Clave::caracteres_validos[uniforme(gna)], '\0'}; // 2 aleatorios de caracteres_validos y el terminador.
 
-    char* encrypt;
-    if(encrypt = crypt())
+    char *encrypt;
+    if (!(encrypt = crypt(cad, sal)))
+    {
+        throw Clave::Incorrecta(Clave::ERROR_CRYPT);
+    }
+
+    return encrypt;
 }
 
 Clave::Clave(const char *cad)
@@ -22,4 +27,18 @@ Clave::Clave(const char *cad)
     {
         throw Incorrecta(CORTA);
     }
+
+    clave_ = cifrar(cad);
+}
+
+Cadena Clave::clave() const
+{
+    return clave_;
+}
+
+bool Clave::verifica(const char *cad) const
+{
+    const char* clave = crypt(cad, clave_);
+
+    return clave && clave_ == clave;
 }
