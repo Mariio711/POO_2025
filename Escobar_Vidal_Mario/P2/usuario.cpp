@@ -44,6 +44,8 @@ bool Clave::verifica(const char *cad) const
 }
 
 /*---------------CLASE USUARIO---------------*/
+static std::unordered_set<Cadena> ids; // Conjunto de identificadores
+
 
 // constructor
 Usuario::Usuario(Cadena id, Cadena nombre, Cadena apell, Cadena direc, Clave clave)

@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstddef>
 #include <iostream>
+#include <iomanip>
 #include "cadena.hpp"
 #include "fecha.hpp"
 #include "usuario.hpp"
@@ -34,7 +35,7 @@ public:
     Numero(const Cadena num);
 
     // operador a cadena de bajo nivel
-    explicit operator const char *() const;
+    operator const char *() const;
 
     // operador menor-que
     friend bool operator<(const Numero &a, const Numero &b);
@@ -50,7 +51,7 @@ public:
     {
         Otro,
         VISA,
-        MasterCard,
+        Mastercard,
         Maestro,
         JCB,
         AmericanExpress
@@ -60,7 +61,7 @@ public:
     class Caducada
     {
     public:
-        Caducada(Fecha &r) : f_cad_(r) {}
+        Caducada(const Fecha &r) : f_cad_(r) {}
         Fecha cuando() const { return f_cad_; }
 
     private:
@@ -71,7 +72,7 @@ public:
     class Num_duplicado
     {
     public:
-        Num_duplicado(Numero &r) : num_(r) {}
+        Num_duplicado(const Numero &r) : num_(r) {}
         Numero que() const { return num_; }
 
     private:
@@ -79,7 +80,7 @@ public:
     };
 
     // constructor unico
-    Tarjeta(Numero num, Usuario tit, Fecha f);
+    Tarjeta(const Numero& num, Usuario& tit, const Fecha& f);
 
     // prohibir la copia
     Tarjeta(const Tarjeta &t) = delete;
@@ -110,5 +111,6 @@ private:
     const Usuario *titular_;
     const Fecha f_caducidad_;
     bool activa_;
+    static std::unordered_set<Numero> nums; // Conjunto de numeros de tarjetas almacenados
 };
 #endif

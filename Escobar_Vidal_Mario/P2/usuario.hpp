@@ -10,6 +10,8 @@
 #include "cadena.hpp"
 #include "tarjeta.hpp"
 #include "articulo.hpp"
+class Numero;
+class Tarjeta;
 
 class Clave
 {
