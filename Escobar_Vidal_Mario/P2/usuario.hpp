@@ -6,8 +6,10 @@
 #include <iostream>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include "cadena.hpp"
 #include "tarjeta.hpp"
+#include "articulo.hpp"
 
 class Clave
 {
@@ -96,6 +98,7 @@ private:
     Clave clave_;
     Tarjetas tarjetas_;
     Articulos articulos_;
+    static std::unordered_set<Cadena> ids; // Conjunto de identificadores
 };
 
 std::ostream& mostrar_carro(std::ostream& os, const Usuario& user);

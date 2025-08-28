@@ -88,7 +88,7 @@ public:
     // metodos observadores
     const Numero numero() const { return numero_; };
     const Usuario *titular() const { return titular_; };
-    const Fecha caducidad() const { return; };
+    const Fecha caducidad() const { return f_caducidad_; };
     const bool activa() const { return activa_; };
     const Tipo tipo() const;
 
