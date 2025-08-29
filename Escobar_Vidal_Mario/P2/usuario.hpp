@@ -7,7 +7,8 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include "cadena.hpp"
+#include "../P1/cadena.hpp"
+#include "../P1/fecha.hpp"
 #include "tarjeta.hpp"
 #include "articulo.hpp"
 class Numero;
@@ -43,7 +44,7 @@ public:
     // metodo verificar
     bool verifica(const char *cad) const; // recibe la contraseña en claro y devuelve verdadero si corresponde con la contraseña
 
-    friend const Cadena &cifrar(const char *cad);
+    friend const Cadena cifrar(const char *cad);
 
 private:
     Cadena clave_;                          // aloja la contraseña cifrada

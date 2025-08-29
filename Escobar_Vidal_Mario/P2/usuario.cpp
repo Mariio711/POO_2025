@@ -3,7 +3,7 @@
 /*---------------CLASE CLAVE---------------*/
 const char Clave::caracteres_validos[] = {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./"};
 
-const Cadena &cifrar(const char *cad)
+const Cadena cifrar(const char *cad)
 {
     static std ::random_device rd;                                     // Para obtener una semilla aleatoria para el GNA.
     static std ::mt19937 gna{rd()};                                    // Usamos un buen GNA, el de Matsumoto y Nishimura, por ejemplo, inicializado con el valor rd().
@@ -38,13 +38,13 @@ Cadena Clave::clave() const
 
 bool Clave::verifica(const char *cad) const
 {
-    const char *clave = crypt(cad, clave_);
+    const char *clave = crypt(cad, (const char*)clave_);
 
     return clave && clave_ == clave;
 }
 
 /*---------------CLASE USUARIO---------------*/
-static std::unordered_set<Cadena> ids; // Conjunto de identificadores
+std::unordered_set<Cadena> Usuario::ids; // Conjunto de identificadores
 
 
 // constructor

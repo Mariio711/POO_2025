@@ -2,39 +2,18 @@
 
 /*---------------CLASE NUMERO---------------*/
 
-// algoritmo de luhn
-bool luhn(const Cadena &numero)
-{
-    size_t n = numero.length();
-    size_t suma = 0;
-    bool alt = false;
-    for (int i = n - 1; i > -1; --i)
-    {
-        n = numero[size_t(i)] - '0';
-        if (alt)
-        {
-            n *= 2;
-            if (n > 9)
-                n = (n % 10) + 1;
-        }
-        alt = !alt;
-        suma += n;
-    }
-    return !(suma % 10);
-}
 
 // constructor
 Numero::Numero(const Cadena num)
 {
     Cadena num_limpio;
-    size_t i = 0;
     for (auto it = num.begin(); it != num.end(); ++it)
     {
         if (!isspace(*it))
         {
             if (!isdigit(*it))
             {
-                throw Numero::Incorrecta(DIGITOS);
+                throw Numero::Incorrecto(DIGITOS);
             }
             else
             {
@@ -45,12 +24,12 @@ Numero::Numero(const Cadena num)
 
     if (num_limpio.length() < 13 || num_limpio.length() > 19)
     {
-        throw Numero::Incorrecta(LONGITUD);
+        throw Numero::Incorrecto(LONGITUD);
     }
 
     if (!luhn(num_limpio))
     {
-        throw Numero::Incorrecta(NO_VALIDO);
+        throw Numero::Incorrecto(NO_VALIDO);
     }
 
     numero_ = num_limpio;
@@ -69,7 +48,7 @@ bool operator<(const Numero &a, const Numero &b)
 }
 
 /*---------------CLASE TARJETA---------------*/
-std::unordered_set<Numero> Tarjeta::nums; // Conjunto de numeros de tarjetas almacenados
+std::set<Numero> Tarjeta::nums; // Conjunto de numeros de tarjetas almacenados
 
 Tarjeta::Tarjeta(const Numero &num, Usuario &tit, const Fecha &f) : numero_(num), titular_(&tit), f_caducidad_(f), activa_(true)
 {
@@ -79,7 +58,7 @@ Tarjeta::Tarjeta(const Numero &num, Usuario &tit, const Fecha &f) : numero_(num)
         throw Tarjeta::Caducada(f);
     }
 
-    typedef std::unordered_set<Numero>::iterator tipoIt;
+    typedef std::set<Numero>::iterator tipoIt;
     std::pair<tipoIt, bool> res = nums.insert(num); // Insertar el identificador id
     if (!res.second)                                // Inserción fallida
     {
@@ -91,7 +70,7 @@ Tarjeta::Tarjeta(const Numero &num, Usuario &tit, const Fecha &f) : numero_(num)
     }
 }
 
-const Tarjeta::Tipo Tarjeta::tipo() const
+Tarjeta::Tipo Tarjeta::tipo() const
 {
     const Cadena &num = (const char *)numero_;
     // Verificar los primeros dígitos
@@ -146,37 +125,35 @@ std::ostream &operator<<(std::ostream &os, const Tarjeta::Tipo &tipo)
 {
     if (os)
     {
-        switch (tipo)
+        if (tipo == Tarjeta::Tipo::AmericanExpress)
         {
-        case Tarjeta::Tipo::AmericanExpress:
-            os << "American Express" << std::endl;
-            return os;
-            break;
-        case Tarjeta::Tipo::JCB:
-            os << "JCB" << std::endl;
-            return os;
-            break;
-        case Tarjeta::Tipo::Maestro:
-            os << "Maestro" << std::endl;
-            return os;
-            break;
-        case Tarjeta::Tipo::Mastercard:
-            os << "Mastercard" << std::endl;
-            return os;
-            break;
-        case Tarjeta::Tipo::VISA:
-            os << "VISA" << std::endl;
-            return os;
-            break;
-        case Tarjeta::Tipo::Otro:
-            os << "Tipo indeterminado" << std::endl;
-            return os;
-            break;
+            os << "American Express";
+        }
+        else if (tipo == Tarjeta::Tipo::JCB)
+        {
+            os << "JCB";
+        }
+        else if (tipo == Tarjeta::Tipo::Maestro)
+        {
+            os << "Maestro";
+        }
+        else if (tipo == Tarjeta::Tipo::Mastercard)
+        {
+            os << "Mastercard";
+        }
+        else if (tipo == Tarjeta::Tipo::VISA)
+        {
+            os << "VISA";
+        }
+        else // Tarjeta::Tipo::Otro
+        {
+            os << "Tipo indeterminado";
         }
     }
+    return os;
 }
 
-std::ostream &operator<<(std::ostream &os, Tarjeta &tarj)
+std::ostream &operator<<(std::ostream &os, const Tarjeta &tarj)
 {
     if (os)
     {

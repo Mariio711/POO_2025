@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <iterator>
+#include <string>
 
 class Cadena
 {
@@ -13,14 +14,14 @@ public:
     Cadena(const char *cadena);                  // de conversion
     Cadena(const Cadena &otra);                  // de copia
 
-    //constructor de movimiento
+    // constructor de movimiento
     Cadena(Cadena &&otra) noexcept;
 
     // operador de aignación
     Cadena &operator=(const Cadena &otra);
     Cadena &operator=(const char *cadena);
 
-    //operador de asignacion por movimiento
+    // operador de asignacion por movimiento
     Cadena &operator=(Cadena &&otra) noexcept;
 
     // destructor
@@ -46,7 +47,7 @@ public:
     const char &operator[](size_t i) const;
 
     // conversion a cadena de bajo nivel
-    explicit operator const char*() const; // deja de ser necesario por el operador de inserción
+    explicit operator const char *() const; // deja de ser necesario por el operador de inserción
 
     // operadores de insercion y extracción
     friend std::ostream &operator<<(std::ostream &os, const Cadena &c);
@@ -54,14 +55,14 @@ public:
 
     //-----------ITERADORES----------
 
-    //Tipos de iteradores
+    // Tipos de iteradores
     typedef char *iterator;
     typedef const char *const_iterator;
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    //Funciones de iteradores directos
-    iterator begin() {return s_ ;}
+    // Funciones de iteradores directos
+    iterator begin() { return s_; }
     iterator end() { return s_ + tam_; }
     const_iterator begin() const { return s_; }
     const_iterator end() const { return s_ + tam_; }
@@ -86,5 +87,27 @@ private:
     size_t tam_;
     char *s_;
 };
+
+// Para P2 y ss.
+// Especialización de la plantilla std ::hash<Key> para definir la función hash
+// a usar con contenedores asociativos desordenados con claves de tipo Cadena,
+// unordered_[set|map|multiset|multimap].
+namespace std
+{               // Estaremos dentro del espacio de nombres std.
+    template <> // Es una especialización de una plantilla para Cadena.
+    struct hash<Cadena>
+    {                                              // Es una clase con solo un operador público.
+        size_t operator()(const Cadena &cad) const // El operador función.
+        {
+            hash<string> hs;             // Creamos un objeto hash de string.
+            auto p{(const char *)(cad)}; // Convertimos cad a cadena de bajo nivel.
+            string s{p};                 // Creamos un string desde la cadena de b. nivel .
+            size_t res{hs(s)};           // El hash del string . Como hs.operator()(s);
+            return res;                  // Devolvemos el hash del string.
+            // En forma abreviada:
+            // return hash<string>{}((const char*)(cad));
+        }
+    };
+}
 
 #endif

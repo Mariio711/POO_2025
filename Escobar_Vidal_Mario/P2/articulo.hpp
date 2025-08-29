@@ -1,8 +1,8 @@
 #ifndef ARTICULO_HPP
 #define ARTICULO_HPP
 
-#include "fecha.hpp"
-#include "cadena.hpp"
+#include "../P1/cadena.hpp"
+#include "../P1/fecha.hpp"
 #include <iostream>
 
 class Articulo
@@ -20,9 +20,6 @@ public:
     int stock() const { return stock_; };                    // const no puede modificar
     int &stock() { return stock_; };                         // no-const puede modificar
 
-    //operador de insercion en flujo de salida
-    friend std::ostream &operator<<(std::ostream &os, const Articulo &c);
-
 private:
     const Cadena referencia_, titulo_;
     const Fecha f_publi_;
@@ -30,4 +27,6 @@ private:
     int stock_;
 };
 
+// operador de insercion en flujo de salida
+std::ostream &operator<<(std::ostream &os, const Articulo &A);
 #endif

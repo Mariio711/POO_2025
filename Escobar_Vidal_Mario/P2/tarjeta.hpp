@@ -5,9 +5,13 @@
 #include <cstddef>
 #include <iostream>
 #include <iomanip>
-#include "cadena.hpp"
-#include "fecha.hpp"
+#include <set>
+#include "../P1/cadena.hpp"
+#include "../P1/fecha.hpp"
 #include "usuario.hpp"
+
+
+class Usuario;
 
 class Numero
 {
@@ -21,10 +25,10 @@ public:
     };
 
     // clase Clave::Incorrecta
-    class Incorrecta
+    class Incorrecto
     {
     public:
-        Incorrecta(Razon r) : razon_(r) {}
+        Incorrecto(Razon r) : razon_(r) {}
         Razon razon() const { return razon_; }
 
     private:
@@ -90,18 +94,20 @@ public:
     const Numero numero() const { return numero_; };
     const Usuario *titular() const { return titular_; };
     const Fecha caducidad() const { return f_caducidad_; };
-    const bool activa() const { return activa_; };
-    const Tipo tipo() const;
+    bool activa() const { return activa_; };
+    Tipo tipo() const;
 
     // metodos modificadores
     bool activa(const bool nuevo); // activar o desactivar tarjeta
-    void anula_titular();          // desvincula del usuario titular y desactiva tarjeta
 
     //sobrecarga del operador de insercion
-    friend std::ostream &operator<<(std::ostream &os, Tarjeta &tarj);
+    friend std::ostream &operator<<(std::ostream &os, const Tarjeta &tarj);
+
+    //para el tipo
+    friend std::ostream &operator<<(std::ostream &os, const Tipo &Tipo);
 
     //operador menor-que
-    friend bool operator<(Tarjeta &tarj_a, Tarjeta &tarj_b);
+    friend bool operator<(const Tarjeta &tarj_a, const Tarjeta &tarj_b);
 
     //destructor
     ~Tarjeta();
@@ -111,6 +117,11 @@ private:
     const Usuario *titular_;
     const Fecha f_caducidad_;
     bool activa_;
-    static std::unordered_set<Numero> nums; // Conjunto de numeros de tarjetas almacenados
+    static std::set<Numero> nums; // Conjunto de numeros de tarjetas almacenados
+    friend Usuario;
+    void anula_titular();          // desvincula del usuario titular y desactiva tarjeta (solo la puede usar usuario)
 };
+
+// Declaración externa de la función luhn
+extern bool luhn(const Cadena &numero);
 #endif
