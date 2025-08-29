@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <iostream>
 #include <iomanip>
+#include <functional>
+#include <algorithm>
 #include <set>
 #include "../P1/cadena.hpp"
 #include "../P1/fecha.hpp"
@@ -33,6 +35,20 @@ public:
 
     private:
         Razon razon_;
+    };
+
+    //functor EsBlanco (alternativa a funcion lambda)
+    struct EsBlanco
+    {
+    public:
+        bool operator() (char c) const {return std::isspace(c);}
+    };
+
+    //functor EsDigito
+    struct EsDigito
+    {
+    public:
+        bool operator() (char c) const {return std::isdigit(c);}
     };
 
     // constructor

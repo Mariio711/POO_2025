@@ -14,9 +14,9 @@
 #include <functional>		// bind, placeholders
 using namespace std;
 
-#if !defined(__clang__) && (__GNUC__>4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 7))
-#error Su compilador GNU C++ es muy antiguo; actualícelo a la última versión.
-#endif
+//#if !defined(__clang__) && (__GNUC__>4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 7))
+//#error Su compilador GNU C++ es muy antiguo; actualícelo a la última versión.
+//#endif
 
 #define cuantos_hay_mayores_que(c) cout <<"Hay " << (n) << " elemento" \
   << ((n) == 1 ? "  " : "s ") << ((n) == 1 ? "mayor" : "mayores") << " que " \

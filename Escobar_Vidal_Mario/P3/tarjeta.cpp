@@ -1,26 +1,20 @@
 #include "tarjeta.hpp"
 
-/*---------------CLASE NUMERO---------------*/
 
+/*---------------CLASE NUMERO---------------*/
 
 // constructor
 Numero::Numero(const Cadena num)
 {
     Cadena num_limpio;
-    for (auto it = num.begin(); it != num.end(); ++it)
+    auto end_it = std::remove_if(num.begin(), num.end(), EsBlanco());
+
+    // Si encuentra algún caracter que no sea dígito entre aux.begin() y end_it
+    if (std::find_if(num.begin(), end_it, std::not_fn(EsDigito())) != end_it)
     {
-        if (!isspace(*it))
-        {
-            if (!isdigit(*it))
-            {
-                throw Numero::Incorrecto(DIGITOS);
-            }
-            else
-            {
-                num_limpio += Cadena(1, *it);
-            }
-        }
+        throw Numero::Incorrecto(DIGITOS);
     }
+
 
     if (num_limpio.length() < 13 || num_limpio.length() > 19)
     {
@@ -100,11 +94,12 @@ bool Tarjeta::activa(const bool nuevo)
 void Tarjeta::anula_titular()
 {
     // Solo procede si hay un titular
-    if (titular_) {
+    if (titular_)
+    {
         // El usuario dejará de tener esta tarjeta
-        const_cast<Usuario*>(titular_)->no_es_titular_de(*this);
+        const_cast<Usuario *>(titular_)->no_es_titular_de(*this);
         // Elimina la referencia al usuario y desactiva la tarjeta
-        const_cast<Usuario*&>(titular_) = nullptr;
+        const_cast<Usuario *&>(titular_) = nullptr;
         activa_ = false;
     }
 }
