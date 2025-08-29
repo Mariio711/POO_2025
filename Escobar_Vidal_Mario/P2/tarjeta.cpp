@@ -99,8 +99,14 @@ bool Tarjeta::activa(const bool nuevo)
 
 void Tarjeta::anula_titular()
 {
-    const_cast<Usuario *&>(titular_) = nullptr;
-    activa_ = false;
+    // Solo procede si hay un titular
+    if (titular_) {
+        // El usuario dejará de tener esta tarjeta
+        const_cast<Usuario*>(titular_)->no_es_titular_de(*this);
+        // Elimina la referencia al usuario y desactiva la tarjeta
+        const_cast<Usuario*&>(titular_) = nullptr;
+        activa_ = false;
+    }
 }
 
 Tarjeta::~Tarjeta()
@@ -127,27 +133,27 @@ std::ostream &operator<<(std::ostream &os, const Tarjeta::Tipo &tipo)
     {
         if (tipo == Tarjeta::Tipo::AmericanExpress)
         {
-            os << "American Express";
+            os << "American Express" << std::endl;
         }
         else if (tipo == Tarjeta::Tipo::JCB)
         {
-            os << "JCB";
+            os << "JCB" << std::endl;
         }
         else if (tipo == Tarjeta::Tipo::Maestro)
         {
-            os << "Maestro";
+            os << "Maestro" << std::endl;
         }
         else if (tipo == Tarjeta::Tipo::Mastercard)
         {
-            os << "Mastercard";
+            os << "Mastercard" << std::endl;
         }
         else if (tipo == Tarjeta::Tipo::VISA)
         {
-            os << "VISA";
+            os << "VISA" << std::endl;
         }
         else // Tarjeta::Tipo::Otro
         {
-            os << "Tipo indeterminado";
+            os << "Tipo indeterminado" << std::endl;
         }
     }
     return os;

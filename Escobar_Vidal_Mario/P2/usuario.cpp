@@ -38,14 +38,13 @@ Cadena Clave::clave() const
 
 bool Clave::verifica(const char *cad) const
 {
-    const char *clave = crypt(cad, (const char*)clave_);
+    const char *clave = crypt(cad, (const char *)clave_);
 
     return clave && clave_ == clave;
 }
 
 /*---------------CLASE USUARIO---------------*/
 std::unordered_set<Cadena> Usuario::ids; // Conjunto de identificadores
-
 
 // constructor
 Usuario::Usuario(Cadena id, Cadena nombre, Cadena apell, Cadena direc, Clave clave)
@@ -63,13 +62,26 @@ Usuario::Usuario(Cadena id, Cadena nombre, Cadena apell, Cadena direc, Clave cla
 // asocia una tarjeta al usuario
 void Usuario::es_titular_de(Tarjeta &tarj)
 {
-    tarjetas_.insert(std::make_pair(tarj.numero(), &tarj));
+    // Verificar si la tarjeta ya tiene un titular y si es distinto a este usuario
+    if (tarj.titular() != nullptr && tarj.titular() != this)
+    {
+        // La tarjeta pertenece a otro usuario, no hacer nada
+    }
+    else
+    {
+        tarjetas_.insert(std::make_pair(tarj.numero(), &tarj));
+    }
 }
 
 // desliga una tarjeta del usuario
 void Usuario::no_es_titular_de(Tarjeta &tarj)
 {
-    tarjetas_.erase(tarj.numero());
+    // Primero verifica que el usuario tenga esta tarjeta
+    if (tarjetas_.find(tarj.numero()) != tarjetas_.end())
+    {
+        // Elimina la referencia a la tarjeta del usuario
+        tarjetas_.erase(tarj.numero());
+    }
 }
 
 // asociacion con clase articulo (añadir articulo al carrito)
@@ -128,17 +140,17 @@ std::ostream &operator<<(std::ostream &os, const Usuario &usr)
     return os;
 }
 
-std::ostream& mostrar_carro(std::ostream& os, const Usuario& user)
+std::ostream &mostrar_carro(std::ostream &os, const Usuario &user)
 {
-    if(os)
+    if (os)
     {
-        os << "Carrito de compra de " << user.id() << "[Articulos: " << user.n_articulos() << "]" << std::endl;
-        os << " Cant. Artículo" << std::endl;
+        os << "Carrito de compra de " << user.id() << " [Artículos: " << user.n_articulos() << "]" << std::endl;
+        os << "    Cant. Artículo" << std::endl;
         os << "===========================================================" << std::endl;
 
-        for(auto it : user.compra())
+        for (auto it : user.compra())
         {
-            os << it.second << it.first << std::endl;
+            os << "    " << it.second << "    " << *it.first << std::endl;
         }
     }
 
@@ -147,9 +159,15 @@ std::ostream& mostrar_carro(std::ostream& os, const Usuario& user)
 
 Usuario::~Usuario()
 {
-    for(auto& it: tarjetas_)
-    {
-        it.second->anula_titular();
-    }
+    // Crea una copia de las claves para iterar, ya que anula_titular() modificará tarjetas_
+    std::vector<Tarjeta *> tarjetas_a_anular;
+    for (auto &par : tarjetas_)
+        tarjetas_a_anular.push_back(par.second);
+
+    // Anula todas las tarjetas
+    for (auto &t : tarjetas_a_anular)
+        t->anula_titular();
+
+    // Finalmente elimina el id
     ids.erase(id_);
 }
