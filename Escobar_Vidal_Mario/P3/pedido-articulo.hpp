@@ -3,6 +3,7 @@
 
 #include <map>
 #include <iostream>
+#include <iomanip>
 #include "articulo.hpp"
 #include "pedido.hpp"
 
@@ -21,15 +22,7 @@ private:
     unsigned cantidad_;
 };
 
-std::ostream &operator<<(std::ostream &os, LineaPedido &lp)
-{
-    if (os)
-    {
-        os.setf(std::ios::fixed); // notacion de punto fijo
-        os.precision(2);          // dos decimales
-        os << lp.precio_venta() << " €    " << lp.cantidad() << std::endl;
-    }
-}
+std::ostream &operator<<(std::ostream &os, const LineaPedido &lp);
 
 class Pedido_Articulo
 {
@@ -37,11 +30,13 @@ public:
     // clases de ordenacion para los diccionarios
     class OrdenaArticulos
     {
+    public:
         bool operator()(const Articulo *art1, const Articulo *art2) const { return art1->referencia() < art2->referencia(); }
     };
 
     class OrdenaPedidos
     {
+    public:
         bool operator()(const Pedido *ped1, const Pedido *ped2) const { return ped1->numero() < ped2->numero(); }
     };
 
@@ -54,12 +49,12 @@ public:
     void pedir(Articulo &art, Pedido &ped, double precio, unsigned cantidad = 1);
 
     // metodos observadores
-    const ItemsPedido &detalle(const Pedido &ped) const;
-    const Pedidos &ventas(const Articulo &art) const;
+    ItemsPedido detalle(const Pedido &ped) const;
+    Pedidos ventas(const Articulo &art) const;
 
     // metodos mostrar
-    void mostarDetallePedidos(std::ostream &os);
-    void mostarVentasArticulos(std::ostream &os);
+    void mostrarDetallePedidos(std::ostream &os) const noexcept;
+    void mostrarVentasArticulos(std::ostream &os) const noexcept;
 
 private:
     typedef std::map<Pedido *, ItemsPedido, OrdenaPedidos> Ped_Art;
@@ -68,7 +63,7 @@ private:
     Art_Ped Art_Ped_;
 };
 
-std::ostream &operator<<(std::ostream &os, Pedido_Articulo::ItemsPedido &Art_ped);
-std::ostream &operator<<(std::ostream &os, Pedido_Articulo::Pedidos &Ped_art);
+std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::ItemsPedido &Art_ped);
+std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::Pedidos &Ped_art);
 
 #endif
