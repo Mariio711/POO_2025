@@ -14,6 +14,7 @@ public:
 
     //metodos de asociacion
     void asocia(Usuario &u, Pedido&p);
+    void asocia(Pedido&p, Usuario &u);
 
     //metodos observadores
     Pedidos pedidos(const Usuario &u) const;

@@ -26,7 +26,7 @@ public:
         NO_VALIDO
     };
 
-    // clase Clave::Incorrecta
+    // clase Tarjeta::Incorrecto
     class Incorrecto
     {
     public:
@@ -98,6 +98,9 @@ public:
     private:
         Numero num_;
     };
+
+    // clase Tarjeta::Desactivada
+    class Desactivada{};
 
     // constructor unico
     Tarjeta(const Numero& num, Usuario& tit, const Fecha& f);
