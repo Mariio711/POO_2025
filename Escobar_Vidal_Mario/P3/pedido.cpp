@@ -1,7 +1,11 @@
 #include "pedido.hpp"
+#include "usuario-pedido.hpp"
+#include "pedido-articulo.hpp"
+
+unsigned Pedido::num_pedidos_ = 1;
 
 Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const Tarjeta &tarj, const Fecha &f_ped)
-    : num_ped_(num_pedidos_), pago_(&tarj), f_ped_(f_ped), total_(0.0)
+    : num_ped_(num_pedidos_++), pago_(&tarj), f_ped_(f_ped), total_(0.0)
 {
     // si no hay articulos en el carrito, lanza excepcion
     if (u.n_articulos() == 0)
@@ -41,23 +45,19 @@ Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const 
     for (auto &[articulo, cantidad] : u.compra())
     {
         P_art.pedir(*this, *articulo, articulo->precio(), cantidad);
-        P_art.pedir(*articulo, *this, articulo->precio(), cantidad);
 
         articulo->stock() -= cantidad;
         total_ = total_ + articulo->precio() * cantidad;
     }
 
     U_ped.asocia(u, *this);
-    U_ped.asocia(*this, u);
 
     u.vaciar_carro();
-
-    ++num_pedidos_;
 }
 
-std::ostream& operator <<(std::ostream& os, const Pedido& ped)
+std::ostream &operator<<(std::ostream &os, const Pedido &ped)
 {
-    if(os)
+    if (os)
     {
         os.setf(std::ios::fixed); // notacion de punto fijo
         os.precision(2);          // dos decimales

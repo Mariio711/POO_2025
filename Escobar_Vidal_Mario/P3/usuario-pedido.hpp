@@ -7,6 +7,8 @@
 #include "usuario.hpp"
 #include "pedido.hpp"
 
+class Pedido;
+
 class Usuario_Pedido
 {
 public:

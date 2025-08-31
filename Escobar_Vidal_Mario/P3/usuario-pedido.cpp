@@ -3,11 +3,12 @@
 void Usuario_Pedido::asocia(Usuario &u, Pedido &p)
 {
     Usr_Peds_[&u].insert(&p);
+    Peds_Usr_[&p] = &u;
 }
 
 void Usuario_Pedido::asocia(Pedido &p, Usuario &u)
 {
-    Peds_Usr_[&p] = &u;
+    asocia(u, p); // Reutiliza el método anterior para mantener consistencia
 }
 
 Usuario_Pedido::Pedidos Usuario_Pedido::pedidos(const Usuario &u) const

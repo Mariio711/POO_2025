@@ -5,7 +5,9 @@
 #include <iostream>
 #include <iomanip>
 #include "articulo.hpp"
-#include "pedido.hpp"
+
+// Forward declarations
+class Pedido;
 
 class LineaPedido
 {
@@ -37,7 +39,8 @@ public:
     class OrdenaPedidos
     {
     public:
-        bool operator()(const Pedido *ped1, const Pedido *ped2) const { return ped1->numero() < ped2->numero(); }
+        // Declaración del operador - implementación en pedido-articulo.cpp
+        bool operator()(const Pedido *ped1, const Pedido *ped2) const;
     };
 
     // diccionarios publicos

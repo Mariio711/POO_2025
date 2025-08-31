@@ -6,11 +6,11 @@
 // constructor
 Numero::Numero(const Cadena num)
 {
-    Cadena num_limpio;
-    auto end_it = std::remove_if(num.begin(), num.end(), EsBlanco());
+    Cadena num_limpio = num;
+    auto end_it = std::remove_if(num_limpio.begin(), num_limpio.end(), EsBlanco());
 
     // Si encuentra algún caracter que no sea dígito entre aux.begin() y end_it
-    if (std::find_if(num.begin(), end_it, std::not_fn(EsDigito())) != end_it)
+    if (std::find_if(num_limpio.begin(), end_it, std::not_fn(EsDigito())) != end_it)
     {
         throw Numero::Incorrecto(DIGITOS);
     }
