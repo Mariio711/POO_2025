@@ -17,14 +17,14 @@ public:
     const Fecha f_publi() const { return f_publi_; };        // const no puede modificar
     double precio() const { return precio_; };               // const no puede modificar
     double &precio() { return precio_; };                    // no-const puede modificar
-    int stock() const { return stock_; };                    // const no puede modificar
-    int &stock() { return stock_; };                         // no-const puede modificar
+    unsigned stock() const { return stock_; };               // const no puede modificar
+    unsigned &stock() { return stock_; };                    // no-const puede modificar
 
 private:
     const Cadena referencia_, titulo_;
     const Fecha f_publi_;
     double precio_;
-    int stock_;
+    unsigned stock_;
 };
 
 // operador de insercion en flujo de salida

@@ -33,7 +33,7 @@ public:
     class OrdenaArticulos
     {
     public:
-        bool operator()(const Articulo *art1, const Articulo *art2) const { return art1->referencia() < art2->referencia(); }
+        bool operator()(const Articulo *art1, const Articulo *art2) const;
     };
 
     class OrdenaPedidos

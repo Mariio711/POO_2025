@@ -6,26 +6,39 @@
 // constructor
 Numero::Numero(const Cadena num)
 {
-    Cadena num_limpio = num;
-    auto end_it = std::remove_if(num_limpio.begin(), num_limpio.end(), EsBlanco());
-
-    // Si encuentra algún caracter que no sea dígito entre aux.begin() y end_it
-    if (std::find_if(num_limpio.begin(), end_it, std::not_fn(EsDigito())) != end_it)
-    {
-        throw Numero::Incorrecto(DIGITOS);
+    // 1. Crear un buffer temporal para almacenar los dígitos
+    char* tmp = new char[num.length() + 1];
+    unsigned i = 0;
+    
+    // 2. Copiar solo los caracteres que no son espacios
+    for (auto c : num) {
+        if (!isspace(c)) {
+            tmp[i++] = c;
+        }
     }
-
-
-    if (num_limpio.length() < 13 || num_limpio.length() > 19)
-    {
+    tmp[i] = '\0'; // Terminar la cadena
+    
+    Cadena num_limpio(tmp); // Crear cadena con los caracteres filtrados
+    delete[] tmp; // Liberar memoria temporal
+    
+    // 3. Verificar que todos los caracteres son dígitos
+    for (auto c : num_limpio) {
+        if (!isdigit(c)) {
+            throw Numero::Incorrecto(DIGITOS);
+        }
+    }
+    
+    // 4. Verificar la longitud
+    if (num_limpio.length() < 13 || num_limpio.length() > 19) {
         throw Numero::Incorrecto(LONGITUD);
     }
-
-    if (!luhn(num_limpio))
-    {
+    
+    // 5. Verificar con el algoritmo de Luhn
+    if (!luhn(num_limpio)) {
         throw Numero::Incorrecto(NO_VALIDO);
     }
-
+    
+    // 6. Asignar el número ya validado
     numero_ = num_limpio;
 }
 

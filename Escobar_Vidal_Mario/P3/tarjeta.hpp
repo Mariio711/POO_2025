@@ -82,7 +82,7 @@ public:
     {
     public:
         Caducada(const Fecha &r) : f_cad_(r) {}
-        Fecha cuando() const { return f_cad_; }
+        const Fecha &cuando() const noexcept { return f_cad_; }
 
     private:
         Fecha f_cad_;

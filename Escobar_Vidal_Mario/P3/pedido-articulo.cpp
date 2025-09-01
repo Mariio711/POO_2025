@@ -7,6 +7,11 @@ bool Pedido_Articulo::OrdenaPedidos::operator()(const Pedido *ped1, const Pedido
     return ped1->numero() < ped2->numero();
 }
 
+bool Pedido_Articulo::OrdenaArticulos::operator()(const Articulo *art1, const Articulo *art2) const
+{
+    return art1->referencia() < art2->referencia();
+}
+
 std::ostream &operator<<(std::ostream &os, const LineaPedido &lp)
 {
     if (os)
@@ -54,51 +59,69 @@ Pedido_Articulo::Pedidos Pedido_Articulo::ventas(const Articulo &art) const
 std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::ItemsPedido &ped)
 {
     double total = 0;
-    int nejemplar = 0;
+    unsigned nejemplar = 0;
 
     os << std::setfill(' ') << std::setw(10) << "PVP" << std::setw(16) << "Cantidad" << std::setw(20) << "Artículo" << std::endl;
     os << std::setfill('=') << std::setw(65) << "" << std::endl;
 
     for (auto const &it : ped)
     {
-        // Definimos nombres para más claridad
         const Articulo &a = *it.first;
         const LineaPedido &lp = it.second;
 
-        total += lp.precio_venta() * lp.cantidad(); // Para el precio total
+        total += lp.precio_venta() * lp.cantidad();
         nejemplar += lp.cantidad();
 
-        os << std::setfill(' ') << lp.precio_venta() << std::setw(10) << " €"
-           << std::setw(16) << lp.cantidad()
-           << "[" << a.referencia() << "] " << a.titulo() << std::endl;
+        os.setf(std::ios::fixed);
+        os.precision(2);
+        os << std::setfill(' ')
+           << std::setw(10) << lp.precio_venta() << " €"
+           << std::setw(10) << lp.cantidad()
+           << "  [" << a.referencia() << "] \"" << a.titulo() << "\"" << std::endl;
     }
     os << std::setfill('=') << std::setw(65) << "" << std::endl;
-    os << std::setfill(' ') << std::setw(10) << "Total:" << total << std::setw(10) << " €" << std::setw(8) << nejemplar << std::endl;
+    os.setf(std::ios::fixed);
+    os.precision(2);
+    os << "Total: " << total << " €" << std::setw(10) << nejemplar << std::endl;
     return os;
 }
 
 std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::Pedidos &art)
 {
     double total = 0.0;
-    int nejemplar = 0;
+    unsigned nejemplar = 0;
 
-    os << " [Pedidos: " << art.size() << "]" << std::endl;
-    os << std::setfill('=') << std::setw(65) << " " << std::endl;
-    os << std::setfill(' ') << std::setw(10) << " PVP" << std::setw(16) << "Cantidad" << std::setw(20) << "Fecha de venta" << std::endl;
-    os << std::setfill('=') << std::setw(65) << " " << std::endl;
+    os << "[Pedidos: " << art.size() << "]" << std::endl;
+    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
+    os << std::setfill(' ')
+       << std::setw(10) << "PVP"
+       << std::setw(16) << "Cantidad"
+       << std::setw(20) << "Fecha de venta" << std::endl;
+    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
+
     for (auto const &it : art)
     {
         const Pedido &p = *it.first;
-        const LineaPedido &l = it.second;
+        const LineaPedido &lp = it.second;
 
-        total += l.precio_venta() * l.cantidad();
-        nejemplar += l.cantidad();
+        total += lp.precio_venta() * lp.cantidad();
+        nejemplar += lp.cantidad();
 
-        os << l << std::setw(20) << p.fecha() << std::endl;
+        os.setf(std::ios::fixed);
+        os.precision(2);
+        os << std::setfill(' ')
+           << std::setw(10) << lp.precio_venta() << " €"
+           << std::setw(10) << lp.cantidad()
+           << std::setw(20) << p.fecha() << std::endl;
     }
 
-    os << std::setfill('=') << std::setw(65) << " " << std::endl;
-    os << std::setfill(' ') << " " << total << " €" << "\t" << nejemplar << std::endl;
+    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
+    os.setf(std::ios::fixed);
+    os.precision(2);
+    os << std::setfill(' ')
+       << std::fixed << std::setprecision(2)
+       << total << " €"
+       << std::setw(10) << nejemplar << std::endl;
     return os;
 }
 
@@ -110,7 +133,6 @@ void Pedido_Articulo::mostrarDetallePedidos(std::ostream &os) const noexcept
     for (auto &it : Ped_Art_)
     {
         const Pedido &p = *it.first;
-        const ItemsPedido &ip = it.second;
 
         total += p.total();
         os << "Pedido num. " << p.numero() << std::endl;
@@ -126,7 +148,16 @@ void Pedido_Articulo::mostrarVentasArticulos(std::ostream &os) const noexcept
 {
     for (auto &it : Art_Ped_)
     {
-        os << "Venta de [" << it.first->referencia() << "] " << it.first->titulo() << std::endl;
-        os << ventas(*it.first) << std::endl;
+        const Articulo *articulo = it.first;
+        os << "Ventas de [" << articulo->referencia() << "] \"" << articulo->titulo() << "\"" << std::endl;
+
+        // Obtener las ventas del artículo
+        const Pedidos &pedidos_articulo = ventas(*articulo);
+
+        // Si hay ventas, mostrarlas con el formato correcto
+        if (!pedidos_articulo.empty())
+        {
+            os << ventas(*articulo) << std::endl;
+        }
     }
 }

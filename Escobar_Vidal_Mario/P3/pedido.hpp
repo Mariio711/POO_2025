@@ -60,11 +60,11 @@ public:
     const Tarjeta *tarjeta() const noexcept { return pago_; }
     const Fecha &fecha() const noexcept { return f_ped_; }
     double total() const noexcept { return total_; }
-    static int n_total_pedidos() noexcept { return num_pedidos_; }
+    static unsigned n_total_pedidos() noexcept { return num_pedidos_; }
 
 private:
     const unsigned num_ped_;
-    const Tarjeta *const pago_;
+    const Tarjeta * const pago_;
     const Fecha f_ped_;
     double total_;
     static unsigned num_pedidos_;

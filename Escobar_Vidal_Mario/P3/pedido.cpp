@@ -2,10 +2,10 @@
 #include "usuario-pedido.hpp"
 #include "pedido-articulo.hpp"
 
-unsigned Pedido::num_pedidos_ = 1;
+unsigned Pedido::num_pedidos_ = 0;
 
 Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const Tarjeta &tarj, const Fecha &f_ped)
-    : num_ped_(num_pedidos_++), pago_(&tarj), f_ped_(f_ped), total_(0.0)
+    : num_ped_(num_pedidos_ + 1), pago_(&tarj), f_ped_(f_ped), total_(0.0)
 {
     // si no hay articulos en el carrito, lanza excepcion
     if (u.n_articulos() == 0)
@@ -32,7 +32,7 @@ Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const 
     // si la tarjeta esta caducada
     if (tarj.caducidad() < f_ped_)
     {
-        throw Tarjeta::Caducada(f_ped_);
+        throw Tarjeta::Caducada(tarj.caducidad());
     }
 
     // si la tarjeta esta desactivada
@@ -53,6 +53,8 @@ Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const 
     U_ped.asocia(u, *this);
 
     u.vaciar_carro();
+
+    ++num_pedidos_;
 }
 
 std::ostream &operator<<(std::ostream &os, const Pedido &ped)
