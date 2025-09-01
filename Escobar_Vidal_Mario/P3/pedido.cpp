@@ -56,7 +56,7 @@ Pedido::Pedido(Usuario_Pedido &U_ped, Pedido_Articulo &P_art, Usuario &u, const 
 
     ++num_pedidos_;
 }
-
+ 
 std::ostream &operator<<(std::ostream &os, const Pedido &ped)
 {
     if (os)
