@@ -92,35 +92,29 @@ std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::Pedidos &art)
     unsigned nejemplar = 0;
 
     os << "[Pedidos: " << art.size() << "]" << std::endl;
-    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
-    os << std::setfill(' ')
-       << std::setw(10) << "PVP"
-       << std::setw(16) << "Cantidad"
-       << std::setw(20) << "Fecha de venta" << std::endl;
-    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
+    os << std::setfill('=') << std::setw(66) << "" << std::endl;
+    os << std::setfill(' ') << std::setw(5) << "PVP"
+       << std::setw(11) << "Cantidad"
+       << std::setw(25) << "Fecha de venta" << std::endl;
+    os << std::setfill('=') << std::setw(66) << "" << std::endl;
 
-    for (auto const &it : art)
+    for (const auto& it : art)
     {
         const Pedido &p = *it.first;
-        const LineaPedido &lp = it.second;
+        const LineaPedido &l = it.second;
 
-        total += lp.precio_venta() * lp.cantidad();
-        nejemplar += lp.cantidad();
+        total += l.precio_venta() * l.cantidad();
+        nejemplar += l.cantidad();
 
-        os.setf(std::ios::fixed);
-        os.precision(2);
-        os << std::setfill(' ')
-           << std::setw(10) << lp.precio_venta() << " €"
-           << std::setw(10) << lp.cantidad()
-           << std::setw(20) << p.fecha() << std::endl;
+        os << std::fixed << std::setprecision(2) << std::setfill(' ')
+           << l.precio_venta() << " €"
+           << std::setw(9) << l.cantidad()
+           << "  " // dos espacios para separar bien
+           << p.fecha() << std::endl;
     }
 
-    os << std::setfill('=') << std::setw(65) << "=" << std::endl;
-    os.setf(std::ios::fixed);
-    os.precision(2);
-    os << std::setfill(' ')
-       << std::fixed << std::setprecision(2)
-       << total << " €"
+    os << std::setfill('=') << std::setw(66) << "" << std::endl;
+    os << std::fixed << std::setprecision(2) << std::setfill(' ') << total << " €"
        << std::setw(10) << nejemplar << std::endl;
     return os;
 }
@@ -129,7 +123,6 @@ std::ostream &operator<<(std::ostream &os, const Pedido_Articulo::Pedidos &art)
 void Pedido_Articulo::mostrarDetallePedidos(std::ostream &os) const noexcept
 {
     double total = 0.0;
-
     for (auto &it : Ped_Art_)
     {
         const Pedido &p = *it.first;
@@ -157,7 +150,7 @@ void Pedido_Articulo::mostrarVentasArticulos(std::ostream &os) const noexcept
         // Si hay ventas, mostrarlas con el formato correcto
         if (!pedidos_articulo.empty())
         {
-            os << ventas(*articulo) << std::endl;
+            os << pedidos_articulo << std::endl;
         }
     }
 }
